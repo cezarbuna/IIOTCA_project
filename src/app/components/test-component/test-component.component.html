@@ -1,0 +1,27 @@
+<div style="display: block; width: 100%; height: 400px;">
+  <canvas
+    baseChart
+    [datasets]="chartDataTemperatureKelvin"
+    [labels]="chartLabelsTemperatureKelvin"
+    [options]="chartOptions"
+    [type]="'line'"
+  ></canvas>
+</div>
+<div style="display: block; width: 100%; height: 400px;">
+  <canvas
+    baseChart
+    [datasets]="chartDataTemperatureCelsius"
+    [labels]="chartLabelsTemperatureCelsius"
+    [options]="chartOptions"
+    [type]="'line'"
+  ></canvas>
+</div>
+<div style="display: block; width: 100%; height: 400px;">
+  <canvas
+    baseChart
+    [datasets]="chartDataHumidity"
+    [labels]="chartLabelsHumidity"
+    [options]="chartOptions"
+    [type]="'line'"
+  ></canvas>
+</div>

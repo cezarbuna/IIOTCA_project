@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "iiotcaproj-e9637"
+  },
+  "targets": {
+    "iiotcaproj-e9637": {
+      "hosting": {
+        "firebase": [
+          "iiotcaproj-e9637"
+        ]
+      }
+    }
+  }
+}
