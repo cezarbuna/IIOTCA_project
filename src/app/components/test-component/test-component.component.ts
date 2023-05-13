@@ -1,88 +1,79 @@
 import { Component, OnInit } from '@angular/core';
 import { DbServiceService } from '../../services/db-service.service';
-import { ChartDataset } from 'chart.js';
+import { ChartDataset, ChartOptions } from 'chart.js';
+
+interface Record {
+  id: string;
+  record_type: string;
+  record_value: string;
+  thing_type: string;
+}
 
 @Component({
   selector: 'app-test-component',
   templateUrl: './test-component.component.html',
-  styleUrls: ['./test-component.component.css'],
+  styleUrls: ['./test-component.component.css']
 })
 export class TestComponentComponent implements OnInit {
-  private records: any;
-
-  // Create separate datasets for each type of data
-  chartDataTemperatureKelvin: ChartDataset[] = [
-    {
-      label: 'Temperature (K)',
-      data: [],
-      borderColor: 'rgba(75, 192, 192, 1)',
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      fill: false,
-    },
-  ];
-  chartDataTemperatureCelsius: ChartDataset[] = [
-    {
-      label: 'Temperature (°C)',
-      data: [],
-      borderColor: 'rgba(255, 99, 132, 1)',
-      backgroundColor: 'rgba(255, 99, 132, 0.2)',
-      fill: false,
-    },
-  ];
-  chartDataHumidity: ChartDataset[] = [
-    {
-      label: 'Humidity (%)',
-      data: [],
-      borderColor: 'rgba(255, 206, 86, 1)',
-      backgroundColor: 'rgba(255, 206, 86, 0.2)',
-      fill: false,
-    },
-  ];
-
-  // Create separate labels for each type of data
-  chartLabelsTemperatureKelvin: string[] = [];
+  chartDataTemperatureCelsius: ChartDataset[] = [];
   chartLabelsTemperatureCelsius: string[] = [];
+
+  chartDataTemperatureKelvin: ChartDataset[] = [];
+  chartLabelsTemperatureKelvin: string[] = [];
+
+  chartDataHumidity: ChartDataset[] = [];
   chartLabelsHumidity: string[] = [];
 
-  chartOptions = {
+  isCelsius = true;
+  temperatureButtonLabel = 'Celsius (C)';
+
+  chartOptions: ChartOptions = {
     responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        display: false,
-      },
-      y: {
-        display: true,
-        title: {
-          display: true,
-        },
-      },
-    },
+    maintainAspectRatio: false
   };
 
-  constructor(private dbService: DbServiceService) {}
+  constructor(private dbService: DbServiceService) { }
 
   ngOnInit(): void {
-    this.dbService.getAllDbEntries().then((records) => {
-      this.records = records;
-      console.log(this.records);
-      this.processData();
+    this.dbService.getAllDbEntries().then((records: Record[]) => {
+      this.organizeChartData(records);
     });
   }
 
-  processData(): void {
-    // Filter records and populate datasets and labels
-    this.records.forEach((record: any) => {
-      const value = parseFloat(record.record_value);
-      if (record.record_type === 'temperature_kelvin') {
-        this.chartLabelsTemperatureKelvin.push(record.id);
-        this.chartDataTemperatureKelvin[0].data.push(value);
-      } else if (record.record_type === 'temperature_celsius') {
-        this.chartLabelsTemperatureCelsius.push(record.id);
-        this.chartDataTemperatureCelsius[0].data.push(value);
-      } else if (record.record_type === 'humidity') {
-        this.chartLabelsHumidity.push(record.id);
-        this.chartDataHumidity[0].data.push(value);
+  navigateToUrl(url: string): void {
+    window.open(url, '_blank');
+  }
+
+  toggleTemperature(): void {
+    this.isCelsius = !this.isCelsius;
+    this.temperatureButtonLabel = this.isCelsius ? 'Celsius (C)' : 'Kelvin (K)';
+  }
+
+  organizeChartData(records: Record[]): void {
+    // reset data
+    this.chartDataTemperatureCelsius = [{ data: [], label: 'Temperature Celsius' }];
+    this.chartLabelsTemperatureCelsius = [];
+
+    this.chartDataTemperatureKelvin = [{ data: [], label: 'Temperature Kelvin' }];
+    this.chartLabelsTemperatureKelvin = [];
+
+    this.chartDataHumidity = [{ data: [], label: 'Humidity' }];
+    this.chartLabelsHumidity = [];
+
+    records.forEach(record => {
+      switch (record.record_type) {
+        case 'temperature_celsius':
+          this.chartDataTemperatureCelsius[0].data?.push(+record.record_value);
+          this.chartLabelsTemperatureCelsius.push('');
+          break;
+        case 'temperature_kelvin':
+          this.chartDataTemperatureKelvin[0].data?.push(+record.record_value);
+          this.chartLabelsTemperatureKelvin.push('');
+          break;
+        case 'humidity':
+          this.chartDataHumidity[0].data?.push(+record.record_value);
+          this.chartLabelsHumidity.push('');
+          break;
       }
     });
   }

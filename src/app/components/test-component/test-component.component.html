@@ -1,24 +1,38 @@
-<div style="display: block; width: 100%; height: 400px;">
+<nav style="display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; padding: 1rem;">
+  <button style="border: none; background-color: black; color: white" (click)="toggleTemperature()">
+    {{ temperatureButtonLabel }}
+  </button>
+  <span class="spacer"></span>
+  <button style="border: none; background-color: black; color: white;" (click)="navigateToUrl('https://github.com/cezarbuna/IIOTCA_project')">Github</button>
+  <button style="border: none; background-color: white; color: blue"  (click)="navigateToUrl('https://lookerstudio.google.com/u/1/reporting/278576a9-7815-4156-8728-de66e13bf789/page/v5FQD')">Looker Studio</button>
+</nav>
+
+<div style="display: block; width: 100%; height: 400px;" *ngIf="isCelsius">
   <canvas
     baseChart
-    [datasets]="chartDataTemperatureKelvin"
-    [labels]="chartLabelsTemperatureKelvin"
-    [options]="chartOptions"
-    [type]="'line'"
-  ></canvas>
-</div>
-<div style="display: block; width: 100%; height: 400px;">
-  <canvas
-    baseChart
+    style="width: 100%;"
     [datasets]="chartDataTemperatureCelsius"
     [labels]="chartLabelsTemperatureCelsius"
     [options]="chartOptions"
     [type]="'line'"
   ></canvas>
 </div>
+
+<div style="display: block; width: 100%; height: 400px;" *ngIf="!isCelsius">
+  <canvas
+    baseChart
+    style="width: 100%;"
+    [datasets]="chartDataTemperatureKelvin"
+    [labels]="chartLabelsTemperatureKelvin"
+    [options]="chartOptions"
+    [type]="'line'"
+  ></canvas>
+</div>
+
 <div style="display: block; width: 100%; height: 400px;">
   <canvas
     baseChart
+    style="width: 100%;"
     [datasets]="chartDataHumidity"
     [labels]="chartLabelsHumidity"
     [options]="chartOptions"
